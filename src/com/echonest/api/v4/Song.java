@@ -121,6 +121,36 @@ public class Song extends ENItem {
         return getDouble("audio_summary.danceability");
     }
 
+    public double getAcousticness() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.acousticness");
+    }
+
+    public double getInstrumentalness() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.instrumentalness");
+    }
+
+    public double getLiveness() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.liveness");
+    }
+
+    public double getSpeechiness() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.speechiness");
+    }
+
+    public double getValence() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.valence");
+    }
+
+    public String getAudioMD5() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getString("audio_summary.audio_md5");
+    }
+
     public String getAnalysisURL() throws EchoNestException {
         fetchBucket("audio_summary");
         return getString("audio_summary.analysis_url");

@@ -37,7 +37,7 @@ public class Commander {
     private boolean traceRecvs = false;
     private boolean traceErrs = false;
     private int minCommandTime = 0;
-    private int timeout = 30000;
+    private int timeout = 180000;
     private int tryCount = 1;
     private long lastCommandTime;
     private Params standardParams = new Params();
@@ -80,10 +80,7 @@ public class Commander {
     public Map sendCommand(String command, Params params, boolean usePost,
             File file) throws EchoNestException {
 
-        long curGap = System.currentTimeMillis() - lastCommandTime;
-        long delayTime = minCommandTime - curGap;
-
-        delay(delayTime);
+        cmdDelay();
 
         Tracker tracker = statsManager.start(command);
 
@@ -139,8 +136,8 @@ public class Commander {
         }
     }
 
-    public void showStats() {
-        statsManager.dump();
+    public String showStats() {
+        return statsManager.dump();
     }
 
     @SuppressWarnings("unchecked")
@@ -172,6 +169,7 @@ public class Commander {
         try {
             return (JSONObject) parser.parse(results);
         } catch (ParseException e) {
+        	System.out.println(String.format("Failed to parse echonest response:%n%s", results));
             throw new IOException("Parse Exception", e);
         }
     }
@@ -304,6 +302,12 @@ public class Commander {
                         }
                         System.out.println();
                     }
+
+                    try {
+                        statsManager.setLastXRateLimit(Integer.valueOf(urc.getHeaderField("X-RateLimit-Limit")));
+                        statsManager.setLastXRateLimitRemaining(Integer.valueOf(urc.getHeaderField("X-RateLimit-Remaining")));
+                        statsManager.setLastXRateLimitUsed(Integer.valueOf(urc.getHeaderField("X-RateLimit-Used")));
+                    } catch (Exception e) {}
 
                     autoThrottleTime = throttle(urc);
                     int code = urc.getResponseCode();

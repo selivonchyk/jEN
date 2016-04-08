@@ -162,6 +162,35 @@ public class Track extends ENItem {
     }
 
     /**
+     * Gets the album name for the track
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public String getAlbumName() throws EchoNestException {
+        return getTopLevelItem("album_name");
+    }
+
+    /**
+     * Gets the release image for the track
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public String getReleaseImage() throws EchoNestException {
+        return getTopLevelItem("release_image");
+    }    
+    /**
+     * Gets the album date for the track
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public String getAlbumDate() throws EchoNestException {
+        return getTopLevelItem("album_date");
+    }
+
+    /**
      * Gets the MD5 of the audio for the track
      *
      * @return
@@ -181,6 +210,16 @@ public class Track extends ENItem {
         return getTopLevelItem("foreign_id");
     }
 
+    /**
+     * Gets the foreign ID for the release
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public String getForeignReleaseID() throws EchoNestException {
+        return getTopLevelItem("foreign_release_id");
+    }
+    
     /**
      * Gets the song ID associated with this track
      *
@@ -309,6 +348,17 @@ public class Track extends ENItem {
     }
 
     /**
+     * Gets the acousticness for the track
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public double getAcousticness() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.acousticness");
+    }
+
+    /**
      * Gets the danceability for the track
      *
      * @return
@@ -317,6 +367,17 @@ public class Track extends ENItem {
     public double getDanceability() throws EchoNestException {
         fetchBucket("audio_summary");
         return getDouble("audio_summary.danceability");
+    }
+
+    /**
+     * Gets the instrumentalness for the track
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public double getInstrumentalness() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.instrumentalness");
     }
 
     /**
@@ -339,6 +400,17 @@ public class Track extends ENItem {
     public double getLiveness() throws EchoNestException {
         fetchBucket("audio_summary");
         return getDouble("audio_summary.liveness");
+    }
+
+    /**
+     * Gets the valence for the track
+     *
+     * @return
+     * @throws EchoNestException
+     */
+    public double getValence() throws EchoNestException {
+        fetchBucket("audio_summary");
+        return getDouble("audio_summary.valence");
     }
 
     /**

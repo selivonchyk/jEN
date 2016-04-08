@@ -4,6 +4,7 @@ import com.echonest.api.v4.Track.AnalysisStatus;
 import com.echonest.api.v4.util.Commander;
 import com.echonest.api.v4.util.MQuery;
 import com.echonest.api.v4.util.Utilities;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -146,8 +147,8 @@ public class EchoNestAPI {
     /**
      * Shows performance and error statistics for the API
      */
-    public void showStats() {
-        cmd.showStats();
+    public String showStats() {
+        return cmd.showStats();
     }
 
     /**
@@ -309,6 +310,26 @@ public class EchoNestAPI {
             genres.add(term);
         }
         return genres;
+    }
+    
+    /**
+     * get similar genres
+     *
+     * @param name the name of genre
+     * @return a list of similar genres
+     * @throws EchoNestException
+     */
+    @SuppressWarnings("rawtypes")
+	public List<Genre> similarGenres(Params p) throws EchoNestException {
+        List<Genre> genreResults = new ArrayList<Genre>();
+        Map results = cmd.sendCommand("genre/similar", p);
+        Map response = (Map) results.get("response");
+        List genreList = (List) response.get("genres");
+        for (int i = 0; i < genreList.size(); i++) {
+            Genre genre = new Genre(this, (Map) genreList.get(i));
+            genreResults.add(genre);
+        }
+        return genreResults;
     }
 
     /**

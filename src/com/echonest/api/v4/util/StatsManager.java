@@ -15,6 +15,9 @@ import java.util.Map;
  * @author Paul
  */
 public class StatsManager {
+	private Integer lastXRateLimit;
+	private Integer lastXRateLimitRemaining;
+	private Integer lastXRateLimitUsed;
 
     public static class Tracker {
 
@@ -94,9 +97,9 @@ public class StatsManager {
         return ps;
     }
 
-    public void dump() {
-        System.out.printf("||%5s|| %4s|| %6s || %6s || %6s || %s ||\n",
-                "Calls", "Fail", "Avg", "Min", "Max", "Method");
+    public String dump() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(String.format("|| %7s || %6s || %6s || %6s || %6s || %15s ||", "Calls", "Fail", "Avg", "Min", "Max", "Method")).append("\n");
         int total = 0;
         int errs = 0;
         int sum = 0;
@@ -104,25 +107,58 @@ public class StatsManager {
         List<OpData> opList = new ArrayList<OpData>(map.values());
         Collections.sort(opList);
         for (OpData opData : opList) {
-            System.out.println(opData);
+        	sb.append(opData).append("\n");
             total += opData.count;
             errs += opData.error;
             sum += opData.sumTime;
         }
 
         int successCount = total - errs;
-        System.out.println("");
-        System.out.printf(" Total calls : %d \n", total);
-        System.out.printf(" Total errors: %d \n", errs);
+        sb.append("\n");
+        sb.append(" Total calls : ").append(total).append(" \n");
+        sb.append(" Total errors: ").append(errs).append(" \n");
         if (total > 0) {
-            System.out.printf(" Success Rate: %d %%\n", 100 * (total - errs) / total);
+        	sb.append(" Success Rate: ").append(100 * (total - errs) / total).append(" \n");
         }
 
         if (successCount > 0) {
-            System.out.printf(" Average Time: %d ms\n", sum / successCount);
+        	sb.append(" Average Time: ").append(sum / successCount).append(" \n");
         }
-        System.out.println("");
+        if (lastXRateLimitRemaining != null) {
+        	sb.append(" Rate limit status: ").append("\n");
+        	sb.append("     X-RateLimit-Limit    : ").append(lastXRateLimit).append("\n");
+        	sb.append("     X-RateLimit-Used     : ").append(lastXRateLimitUsed).append("\n");
+        	sb.append("     X-RateLimit-Remaining: ").append(lastXRateLimitRemaining).append("\n");
+        }
+        sb.append("\n");
+        String dump = sb.toString();
+        System.out.println(dump);
+        return dump;
     }
+
+	public Integer getLastXRateLimit() {
+		return lastXRateLimit;
+	}
+
+	public void setLastXRateLimit(Integer lastXRateLimit) {
+		this.lastXRateLimit = lastXRateLimit;
+	}
+
+	public Integer getLastXRateLimitRemaining() {
+		return lastXRateLimitRemaining;
+	}
+
+	public void setLastXRateLimitRemaining(Integer lastXRateLimitRemaining) {
+		this.lastXRateLimitRemaining = lastXRateLimitRemaining;
+	}
+
+	public Integer getLastXRateLimitUsed() {
+		return lastXRateLimitUsed;
+	}
+
+	public void setLastXRateLimitUsed(Integer lastXRateLimitUsed) {
+		this.lastXRateLimitUsed = lastXRateLimitUsed;
+	}
 }
 
 class OpData implements Comparable<OpData> {
@@ -172,7 +208,7 @@ class OpData implements Comparable<OpData> {
     }
 
     public String toString() {
-        return String.format("|| %3d || %3d || %6d || %6d || %6d || %s ||",
+        return String.format("|| %7d || %6d || %6d || %6d || %6d || %15s ||",
                 getCount(), getError(), getAvgTime(), getMinTime(), getMaxTime(), getName());
 
     }

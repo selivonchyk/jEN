@@ -12,9 +12,6 @@ import java.util.*;
  * parses them into commands and executes them, results are sent back on the
  * output stream.
  *
- * TODO: this was written before there were generics, it should be upgraded to
- * use them.
- *
  * @see Shell
  */
 public class Shell extends Thread {

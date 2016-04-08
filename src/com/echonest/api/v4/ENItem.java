@@ -62,7 +62,7 @@ public class ENItem {
         extractForeignIDs(data);
     }
 
-    private String findID() throws EchoNestException {
+    protected String findID() throws EchoNestException {
         String alt_name = type + "_" + "id";
         if (data.get("id") != null) {
             return (String) data.get("id");
